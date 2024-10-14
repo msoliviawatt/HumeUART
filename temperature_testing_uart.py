@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import serial
 import time
 import argparse
@@ -19,6 +18,19 @@ def parity_byte( in_command_bytes ):
     print(str(output_byte))
     print(hex(output_byte))
     return output_byte
+
+# set_frequency( int new_frequency, float attenuation) and 
+# would return the message bytes appropriate for this command. Try to implement 
+# commands for command indices: 0x00, 0x02, 0x05, 0x09, 0x31, 0x35, and 0x80.
+def set_frequency (new_frequency, attenuation):
+    # command index is 0x02
+    # data length is 8 bytes
+    # data: 6 bytes frequency, 2 bytes attenuation
+    frequency_in_hex = hex(new_frequency)
+    attenuation_in_hex = hex(attenuation)
+    print(frequency_in_hex + ' ' + attenuation_in_hex)
+
+set_frequency(10000, 10)
 
 try:
     ports = serial.tools.list_ports.comports()
