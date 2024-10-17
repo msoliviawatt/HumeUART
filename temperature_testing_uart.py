@@ -27,30 +27,44 @@ def parity_byte(in_command_bytes):
 # would return the message bytes appropriate for this command. Try to implement
 # commands for command indices: 0x00, 0x02, 0x05, 0x09, 0x31, 0x35, and 0x80.
 
-
-def set_frequency(new_frequency, attenuation):
+# note that there is a resolution of 1 hz in this implementation
+def set_frequency_1hz(new_frequency:int, attenuation:int): 
     # command index is 0x02
     # data length is 8 bytes 
     # data: 6 bytes frequency, 2 bytes attenuation
     frequency_in_hex = hex(new_frequency)
     attenuation_in_hex = hex(attenuation)
     print(frequency_in_hex + ' ' + attenuation_in_hex)
+    frequency_bytes = new_frequency.to_bytes(6, byteorder='big')
+    frequency_bytes = bytes_to_byte_array(frequency_bytes)
+    attenuation_bytes = attenuation.to_bytes(2, byteorder='big')
+    attenuation_bytes = bytes_to_byte_array(frequency_bytes)
+    bytes = [0xaa, 0x55, 0x02]
+    bytes.append(frequency_bytes)
+    bytes.append(attenuation_bytes)
+    send_data(bytes)
 
+freq = 100000
+print(freq.to_bytes(6, byteorder='big'))
 
-set_frequency(10000, 10)
+def bytes_to_byte_array(data:str):
+    data = str(data)
+    byte_list = data.split("\\x")
+    print(byte_list)
+    return byte_list
 
-
+print(bytes_to_byte_array(freq.to_bytes(6, byteorder='big') ))
 def list_ports():
     ports = serial.tools.list_ports.comports()
     for port, desc, hwid in sorted(ports):
         print("{}: {} [{}]".format(port, desc, hwid))
         print('here1')
 
-
+# note that this adds the parity bit
 def send_data(bytes_to_send: list):
     try:
         with serial.Serial('COM4', args.baud, timeout=1) as ser:
-            ser.write(serial.to_bytes(bytes_to_send))
+            ser.write(serial.to_bytes(bytes_to_send + parity_byte(bytes_to_send)))
             ser.flush()
     except IOError:
         print("cry")
