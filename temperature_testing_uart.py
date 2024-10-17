@@ -50,7 +50,6 @@ print(freq.to_bytes(6, byteorder='big'))
 def bytes_to_byte_array(data:str):
     data = str(data)
     byte_list = data.split("\\x")
-    print(byte_list)
     return byte_list
 
 print(bytes_to_byte_array(freq.to_bytes(6, byteorder='big') ))
