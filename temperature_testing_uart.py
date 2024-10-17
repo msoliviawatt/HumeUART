@@ -26,9 +26,29 @@ def set_frequency (new_frequency, attenuation):
     # command index is 0x02
     # data length is 8 bytes
     # data: 6 bytes frequency, 2 bytes attenuation
-    frequency_in_hex = hex(new_frequency)
-    attenuation_in_hex = hex(attenuation)
-    print(frequency_in_hex + ' ' + attenuation_in_hex)
+
+    # frequency_in_hex = hex(new_frequency)
+    # attenuation_in_hex = hex(attenuation)
+
+    frequency_in_hex = hex(new_frequency)[2:].zfill(12)  # padding to 12 digits for 6 bytes
+    attenuation_in_hex = hex(attenuation)[2:].zfill(4)   # padding to 4 digits for 2 bytes
+    
+    full_command_hex = frequency_in_hex + attenuation_in_hex
+    print(full_command_hex)
+
+    data_bytes = []
+    
+    for i in range(0, len(full_command_hex), 2):
+        bytes = full_command_hex[i:i + 2]
+        set_of_bytes = f'0x{bytes}'
+        data_bytes.append(set_of_bytes)
+    
+    print(f"Frequency in hex (6 bytes): {frequency_in_hex}")
+    print(f"Attenuation in hex (2 bytes): {attenuation_in_hex}")
+    print(f"Added command in bytes: {data_bytes}")
+
+    return data_bytes
+
 
 set_frequency(10000, 10)
 
@@ -50,4 +70,4 @@ try:
         ser.close()
 except IOError:
     print("cry")
-    ser.close()
+    # ser.close()
