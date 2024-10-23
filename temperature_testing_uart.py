@@ -22,25 +22,25 @@ def parity_byte( in_command_bytes ):
 # set_frequency( int new_frequency, float attenuation) and 
 # would return the message bytes appropriate for this command. Try to implement 
 # commands for command indices: 0x00, 0x02, 0x05, 0x09, 0x31, 0x35, and 0x80.
-def set_frequency (new_frequency, attenuation):
+def set_frequency1 (new_frequency, attenuation):
     # command index is 0x02
     # data length is 8 bytes
     # data: 6 bytes frequency, 2 bytes attenuation
 
-    # frequency_in_hex = hex(new_frequency)
-    # attenuation_in_hex = hex(attenuation)
+    # Attenuation, step 0.1 dBm, and add up 1500
+    attenuation = int(attenuation) * 10 + 1500
 
     frequency_in_hex = hex(new_frequency)[2:].zfill(12)  # padding to 12 digits for 6 bytes
     attenuation_in_hex = hex(attenuation)[2:].zfill(4)   # padding to 4 digits for 2 bytes
-    
-    full_command_hex = frequency_in_hex + attenuation_in_hex
-    print(full_command_hex)
 
-    data_bytes = []
+    full_command_hex = frequency_in_hex + attenuation_in_hex
+    print(f"full command: {full_command_hex}")
+
+    data_bytes = [0xaa,0x55, 0x02]
     
     for i in range(0, len(full_command_hex), 2):
-        bytes = full_command_hex[i:i + 2]
-        set_of_bytes = f'0x{bytes}'
+        bytes1 = full_command_hex[i:i + 2]
+        set_of_bytes = int(bytes1, 16)
         data_bytes.append(set_of_bytes)
     
     print(f"Frequency in hex (6 bytes): {frequency_in_hex}")
@@ -49,25 +49,52 @@ def set_frequency (new_frequency, attenuation):
 
     return data_bytes
 
+set_frequency1(10000, 1)
 
-set_frequency(10000, 10)
+# 0x05
+# 6 bytes (Frequency, step 0.1 Hz) 
+# 2 bytes (Attenuation, step 0.1 dBm, and add up 1500) 
+def set_frequency2 (new_frequency, attenuation):
+    new_frequency = int(new_frequency) * 10
+    attenuation = int(attenuation) * 10
 
-try:
-    ports = serial.tools.list_ports.comports()
-    for port,desc,hwid in sorted(ports):
-        print("{}: {} [{}]".format(port,desc,hwid))
-    with serial.Serial('COM4', args.baud, timeout=1) as ser:
-        print('here1')
-        data_bytes = [0xaa,0x55, 0x00, 0x01, 0x01]
-        #data_bytes = [0xaa,0x55, 0x02, 0x08, 0x00,0x02,0xcb,0x41,0x78,0x00,0x00,0x00,0x05]
-        data_bytes.append( parity_byte(data_bytes) )
+    frequency_in_hex = hex(new_frequency)[2:].zfill(12)
+    attenuation_in_hex = hex(attenuation)[2:].zfill(4)
+
+    command_in_hex = frequency_in_hex + attenuation_in_hex
+    print(f"full command: {command_in_hex}")
+
+    data_bytes = [0xaa,0x55, 0x05]
+
+    for i in range(0, len(command_in_hex), 2):
+        bytes1 = command_in_hex[i:i + 2]
+        set_of_bytes = int(bytes1, 16)
+        data_bytes.append(set_of_bytes)
+    
+    print(f"Frequency in hex (6 bytes): {frequency_in_hex}")
+    print(f"Attenuation in hex (2 bytes): {attenuation_in_hex}")
+    print(f"Added command in bytes: {data_bytes}")
+
+    return data_bytes
+
+set_frequency2(1000, 0.5)
+
+# try:
+#     ports = serial.tools.list_ports.comports()
+#     for port,desc,hwid in sorted(ports):
+#         print("{}: {} [{}]".format(port,desc,hwid))
+#     with serial.Serial('COM4', args.baud, timeout=1) as ser:
+#         print('here1')
+#         data_bytes = [0xaa,0x55, 0x00, 0x01, 0x01]
+#         #data_bytes = [0xaa,0x55, 0x02, 0x08, 0x00,0x02,0xcb,0x41,0x78,0x00,0x00,0x00,0x05]
+#         data_bytes.append( parity_byte(data_bytes) )
         
-        ser.write(serial.to_bytes(data_bytes))
-        ser.flush()
-        read_line = ser.readline()
-        print(f"Received: {read_line}")
-        print('received decoded: ' + read_line.hex())
-        ser.close()
-except IOError:
-    print("cry")
-    # ser.close()
+#         ser.write(serial.to_bytes(data_bytes))
+#         ser.flush()
+#         read_line = ser.readline()
+#         print(f"Received: {read_line}")
+#         print('received decoded: ' + read_line.hex())
+#         ser.close()
+# except IOError:
+#     print("cry")
+#     # ser.close()
