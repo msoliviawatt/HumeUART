@@ -20,7 +20,7 @@ def parity_byte( in_command_bytes ):
     return output_byte
 
 # for adding to set of bytes
-def addBytes(data_bytes, command):
+def add_bytes(data_bytes, command):
     for i in range (0, len(command), 2):
         bytes_add = command[i : i + 2]
         set_of_bytes = int(bytes_add, 16)
@@ -31,7 +31,7 @@ def addBytes(data_bytes, command):
 # set_frequency( int new_frequency, float attenuation) and 
 # would return the message bytes appropriate for this command. Try to implement 
 # commands for command indices: 0x00, 0x02, 0x05, 0x09, 0x31, 0x35, and 0x80.
-def set_frequency1 (new_frequency, attenuation):
+def set_frequency_hertz (new_frequency, attenuation):
     # command index is 0x02
     # data length is 8 bytes
     # data: 6 bytes frequency, 2 bytes attenuation
@@ -47,7 +47,7 @@ def set_frequency1 (new_frequency, attenuation):
 
     data_bytes = [0xaa,0x55, 0x02]
 
-    data_bytes = addBytes(data_bytes, full_command_hex)
+    data_bytes = add_bytes(data_bytes, full_command_hex)
     
     print(f"Frequency in hex (6 bytes): {frequency_in_hex}")
     print(f"Attenuation in hex (2 bytes): {attenuation_in_hex}")
@@ -59,7 +59,7 @@ def set_frequency1 (new_frequency, attenuation):
 # 0x05
 # 6 bytes (Frequency, step 0.1 Hz) 
 # 2 bytes (Attenuation, step 0.1 dBm, and add up 1500) 
-def set_frequency2 (new_frequency, attenuation):
+def set_frequency_0_1_hertz (new_frequency, attenuation):
     new_frequency = int(new_frequency) * 10
     attenuation = int(attenuation) * 10
 
@@ -76,7 +76,7 @@ def set_frequency2 (new_frequency, attenuation):
     #     set_of_bytes = int(bytes1, 16)
     #     data_bytes.append(set_of_bytes)
 
-    data_bytes = addBytes(data_bytes, command_in_hex)
+    data_bytes = add_bytes(data_bytes, command_in_hex)
     
     print(f"Frequency in hex (6 bytes): {frequency_in_hex}")
     print(f"Attenuation in hex (2 bytes): {attenuation_in_hex}")
@@ -91,7 +91,7 @@ def set_frequency2 (new_frequency, attenuation):
 # enter reference parameter as 'internal' or 'external'(?)
 # 1 byte
 # with string
-def setReferenceClockWithString(reference):
+def set_reference_clock_with_string(reference):
     if (reference.lower() != 'internal' and reference.lower() != 'external'):
         return 'invalid input'
     
@@ -103,7 +103,7 @@ def setReferenceClockWithString(reference):
     reference_in_hex = hex(reference)[2:].zfill(2)
 
     data_bytes = [0xaa,0x55, 0x08]
-    data_bytes = addBytes(data_bytes, reference_in_hex)
+    data_bytes = add_bytes(data_bytes, reference_in_hex)
 
     # for testing purposes
     print(f"Reference parameter in hex (1 byte): {reference_in_hex}")
@@ -114,12 +114,12 @@ def setReferenceClockWithString(reference):
 # when input is int
 # 0x01 Use Internal Reference
 # 0x00 Use External Reference
-def setReferenceClockWithInt(reference):
+def set_reference_clock_with_int(reference):
 
     reference_in_hex = hex(reference)[2:].zfill(2)
 
     data_bytes = [0xaa,0x55, 0x08]
-    data_bytes = addBytes(data_bytes, reference_in_hex)
+    data_bytes = add_bytes(data_bytes, reference_in_hex)
 
     # for testing purposes
     print(f"Reference parameter in hex (1 byte): {reference_in_hex}")
@@ -130,7 +130,7 @@ def setReferenceClockWithInt(reference):
 # output switch
 # 0x01 output ON
 # 0x00 output OFF
-def setOutputSwitchWithString(output):
+def set_output_switch_with_string(output):
     if (output.lower() != 'on' or output.lower() != 'off'):
         return 'invalid input'
     
@@ -143,7 +143,7 @@ def setOutputSwitchWithString(output):
     output_in_hex = hex(output)[2:].zfill(2)
 
     data_bytes = [0xaa, 0x55, 0x09]
-    data_bytes = addBytes(data_bytes, output_in_hex)
+    data_bytes = add_bytes(data_bytes, output_in_hex)
 
     # testing
     print(f"Output value in hex (1 byte): {output_in_hex}")
@@ -155,14 +155,14 @@ def setOutputSwitchWithString(output):
 # 0x01 output ON
 # 0x00 output OFF
 
-def setOutputSwitchWithInt(output):
+def set_output_switch_with_int(output):
     if (output != 0 and output != 1):
         return 'invalid input. please use 0 or 1'
     
     output_in_hex = hex(output)[2:].zfill(2)
 
     data_bytes = [0xaa, 0x55, 0x09]
-    data_bytes = addBytes(data_bytes, output_in_hex)
+    data_bytes = add_bytes(data_bytes, output_in_hex)
 
     # testing
     print(f"Output value in hex (1 byte): {output_in_hex}")
@@ -197,27 +197,27 @@ print("----------------------------------------------")
 
 print("set frequency to 10000 with attenuation 1")
 print("----------------------------------------------")
-set_frequency1(10000, 1)
+set_frequency_hertz(10000, 1)
 
 print("set frequency to 1000 with attenuation 0.5")
 print("----------------------------------------------")
-set_frequency2(1000, 0.5)
+set_frequency_0_1_hertz(1000, 0.5)
 
 print("set reference clock to external using string")
 print("----------------------------------------------")
-setReferenceClockWithString('external')
+set_reference_clock_with_string('external')
 
 print("set reference clock to external using int")
 print("----------------------------------------------")
-setReferenceClockWithInt(0)
+set_reference_clock_with_int(0)
 
 print("set output to on using int")
 print("----------------------------------------------")
-setOutputSwitchWithInt(1)
+set_output_switch_with_int(1)
 
 print("set output to on using string")
 print("----------------------------------------------")
-setOutputSwitchWithString('on')
+set_output_switch_with_string('on')
 
 
 
