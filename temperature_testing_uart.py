@@ -56,6 +56,9 @@ def set_frequency_1hz(new_frequency:int, attenuation:int):
     print(freq_bytes + atten_bytes )
     return freq_bytes + atten_bytes
 
+def sweep_Frequency(startFrequency:int, stopFrequency:int, frequencyStep:int, startPower:int, stopPower:int, powerStep:int):
+    start_freq_bytes = bytes_to_byte_array(startFrequency.to_bytes(8, byteorder='big'))
+    stop_freq_bytes = bytes_to_byte_array(stopFrequency.to_bytes(8, byteorder='big'))
 
 
 # freq = 100000
@@ -65,7 +68,6 @@ def bytes_to_byte_array(data:str):
     data = str(data) 
     byte_list = data.split("\\x")
     data = data.replace('b', "")
-    data = data.replace("'", "")
     data = data.replace("'", "")
     return data
 
