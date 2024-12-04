@@ -28,7 +28,8 @@ def parity_byte(in_command_bytes):
 # commands for command indices: 0x00, 0x02, 0x05, 0x09, 0x31, 0x35, and 0x80.
 
 # note that there is a resolution of 1 hz in this implementation
-def set_frequency_1hz(new_frequency:int, attenuation:int): 
+def set_frequency_1hz(new_frequency:int, attenuation:int):
+    attenuation = attenuation * 10 
     # command index is 0x02
     # data length is 8 bytes 
     # data: 6 bytes frequency, 2 bytes attenuation
@@ -42,17 +43,29 @@ def set_frequency_1hz(new_frequency:int, attenuation:int):
     bytes = [0xaa, 0x55, 0x02]
     bytes.append(frequency_bytes)
     bytes.append(attenuation_bytes)
-    send_data(bytes)
+    return (bytes) # return not send
 
-freq = 100000
-print(freq.to_bytes(6, byteorder='big'))
+def set_frequency_1hz(new_frequency:int, attenuation:int):
+    #command 0x05
+    new_frequency = new_frequency * 10
+    attenuation = attenuation * 10
+    freq_bytes = new_frequency.to_bytes(6, byteorder='big')
+    freq_bytes = bytes_to_byte_array(freq_bytes)
+    atten_bytes = attenuation.to_bytes(2) 
+    atten_bytes = bytes_to_byte_array(atten_bytes)
+    print(freq_bytes + atten_bytes )
+    return freq_bytes + atten_bytes
+
+
+
+# freq = 100000
+# print(freq.to_bytes(6, byteorder='big'))
 
 def bytes_to_byte_array(data:str):
     data = str(data)
     byte_list = data.split("\\x")
     return byte_list
 
-print(bytes_to_byte_array(freq.to_bytes(6, byteorder='big') ))
 def list_ports():
     ports = serial.tools.list_ports.comports()
     for port, desc, hwid in sorted(ports):
@@ -83,3 +96,4 @@ def read_response():
 
 
 
+print(set_frequency_1hz(100, 20))
