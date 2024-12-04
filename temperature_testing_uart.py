@@ -62,9 +62,9 @@ def set_frequency_1hz(new_frequency:int, attenuation:int):
 # print(freq.to_bytes(6, byteorder='big'))
 
 def bytes_to_byte_array(data:str):
-    data = str(data)
+    data = str(data) 
     byte_list = data.split("\\x")
-    return byte_list
+    return data
 
 def list_ports():
     ports = serial.tools.list_ports.comports()
