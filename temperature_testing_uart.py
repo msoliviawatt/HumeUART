@@ -64,6 +64,9 @@ def set_frequency_1hz(new_frequency:int, attenuation:int):
 def bytes_to_byte_array(data:str):
     data = str(data) 
     byte_list = data.split("\\x")
+    data = data.replace('b', "")
+    data = data.replace("'", "")
+    data = data.replace("'", "")
     return data
 
 def list_ports():
