@@ -59,7 +59,11 @@ def set_frequency_1hz(new_frequency:int, attenuation:int):
 def sweep_Frequency(startFrequency:int, stopFrequency:int, frequencyStep:int, startPower:int, stopPower:int, powerStep:int):
     start_freq_bytes = bytes_to_byte_array(startFrequency.to_bytes(8, byteorder='big'))
     stop_freq_bytes = bytes_to_byte_array(stopFrequency.to_bytes(8, byteorder='big'))
-
+    freq_step_bytes = bytes_to_byte_array(frequencyStep.to_bytes(8, byteorder='big'))
+    start_power_bytes = bytes_to_byte_array(startPower.to_bytes(2, byteorder='big')) 
+    stop_power_bytes = bytes_to_byte_array(stopPower.to_bytes(2, byteorder='big')) 
+    power_step_bytes = bytes_to_byte_array(powerStep.to_bytes(2, byteorder='big')) 
+    return start_freq_bytes + stop_freq_bytes + freq_step_bytes + start_power_bytes + stop_power_bytes + power_step_bytes
 
 # freq = 100000
 # print(freq.to_bytes(6, byteorder='big'))
